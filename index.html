@@ -145,7 +145,7 @@
             justify-content: space-between;
             box-sizing: border-box;
             height: auto; 
-            overflow: visible; /* ചിഹ്നങ്ങൾ മുറിഞ്ഞു പോകാതിരിക്കാൻ */
+            overflow: visible;
         }
 
         .box-left {
@@ -165,14 +165,23 @@
             width: 18px;
         }
 
-        /* 🛠️ മലയാളം ചിഹ്നങ്ങൾക്ക് ആവശ്യത്തിന് സ്പേസ് നൽകി തിരുത്തിയത് */
         .box-title {
             font-size: 14px;
             font-weight: 600;
             color: #ffffff;
-            line-height: 1.8; /* ചിഹ്നങ്ങൾക്ക് മുകളിൽ നല്ല ഗ്യാപ്പ് നൽകുന്നു */
-            white-space: normal; /* അക്ഷരങ്ങൾ കട്ട് ആകുന്നത് തടയുന്നു */
+            line-height: 1.8;
+            white-space: normal;
             overflow: visible;
+        }
+
+        .unit-tag {
+            font-size: 10px;
+            color: #cca43b;
+            background: rgba(204, 164, 59, 0.15);
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-weight: 700;
         }
 
         .box-price-container {
@@ -258,7 +267,7 @@
     <div class="control-panel">
         <h2 style="margin: 0 0 5px 0; font-size: 20px; color: #cca43b; font-weight: 800;">NSI Studio Style</h2>
         <p style="margin: 0 0 18px 0; font-size: 12px; color: #a0aec0;">Fixed Single Column Design (15 Items)</p>
-        <button class="btn-generate" onclick="generatePremiumPosters()">🎨 ഡിзайനർ പോസ്റ്റർ നിർമ്മിക്കുക</button>
+        <button class="btn-generate" onclick="generatePremiumPosters()">🎨 ഡിസൈനർ പോസ്റ്റർ നിർമ്മിക്കുക</button>
     </div>
 
     <div id="loading" class="loading-status">⏳ റേറ്റുകൾ കൃത്യമായി ക്രമീകരിക്കുന്നു...</div>
@@ -287,27 +296,35 @@
             .then(res => res.json())
             .then(data => {
                 loading.style.display = "none";
-                
+
                 let rawProducts = [];
                 if (Array.isArray(data)) { rawProducts = data; }
                 else if (data && Array.isArray(data.data)) { rawProducts = data.data; }
-                
+
                 let cleanedItems = [];
                 rawProducts.forEach(product => {
                     const keys = Object.keys(product).reduce((acc, k) => {
                         acc[k.toLowerCase().replace(/\s+/g, '')] = product[k];
                         return acc;
                     }, {});
-                    
+
                     let name = keys['name'] || product['Name'] || product['name'] || "";
                     let offerPrice = parseFloat(keys['offerprice'] || product['OfferPrice'] || product['offerPrice'] || 0);
                     let regularPrice = parseFloat(keys['regularprice'] || product['RegularPrice'] || product['regularPrice'] || 0);
-                    
+
                     if (name && name !== "No Name" && offerPrice > 0) {
+                        // 🛠️ വെള്ളരിക്ക അല്ലെങ്കിൽ കോളിഫ്ലവർ ആണോ എന്ന് പരിശോധിച്ച് യൂണിറ്റ് തിട്ടപ്പെടുത്തുന്നു
+                        const nameLower = name.toLowerCase();
+                        let unitType = "kg";
+                        if (nameLower.includes("വെള്ളരി") || nameLower.includes("കോളിഫ്ലവർ") || nameLower.includes("cauliflower") || nameLower.includes("cucumber")) {
+                            unitType = "pc";
+                        }
+
                         cleanedItems.push({ 
                             name: name, 
                             offer: offerPrice,
-                            regular: regularPrice > 0 ? regularPrice : offerPrice + 10
+                            regular: regularPrice > 0 ? regularPrice : offerPrice + 10,
+                            unit: unitType
                         });
                     }
                 });
@@ -329,15 +346,17 @@
                     let wrapper = document.createElement('div');
                     wrapper.className = 'poster-wrapper';
                     let posterId = `poster-page-${page + 1}`;
-                    
+
                     let listRows = "";
                     chunk.forEach((item, index) => {
                         const serialNumber = start + index + 1;
+                        const unitBadge = item.unit === "pc" ? `<span class="unit-tag">1 Pc</span>` : ``;
+
                         listRows += `
                             <div class="item-row">
                                 <div class="box-left">
                                     <span class="box-num">${serialNumber}</span>
-                                    <span class="box-title">${item.name}</span>
+                                    <span class="box-title">${item.name} ${unitBadge}</span>
                                 </div>
                                 <div class="box-price-container">
                                     <span class="price-regular">₹${item.regular}</span>
@@ -381,7 +400,8 @@
 
                 let broadcastMessage = `🥬 *NSI FRESH & GREEN* 🥬\n📆 Date: ${currentDate}\n\n`;
                 cleanedItems.forEach((item, idx) => {
-                    broadcastMessage += `${idx + 1}. ${item.name} ➔ ₹~~${item.regular}~~ *₹${item.offer}/kg*\n`;
+                    const unitLabel = item.unit === "pc" ? "1 Pc" : "kg";
+                    broadcastMessage += `${idx + 1}. ${item.name} ➔ ₹~~${item.regular}~~ *₹${item.offer}/${unitLabel}*\n`;
                 });
                 broadcastMessage += `\n🛒 Order Now on WhatsApp!`;
                 document.getElementById("text-area").value = broadcastMessage;
@@ -407,7 +427,7 @@
         }).then(canvas => {
             canvas.toBlob(blob => {
                 const file = new File([blob], `NSI_Offer_Page_${pageNum}.png`, { type: 'image/png' });
-                
+
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     navigator.share({
                         files: [file],
