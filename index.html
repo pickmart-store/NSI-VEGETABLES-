@@ -1,473 +1,258 @@
 <!DOCTYPE html>
 <html lang="ml">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NSI Premium Offer Flyer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Manjari:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        body {
-            font-family: 'Poppins', 'Manjari', sans-serif;
-            background-color: #0c1a12;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #fff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>പച്ചക്കറി പ്രൈസ് ലിസ്റ്റ് & ഓർഡർ</title>
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --light-bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      padding-bottom: 80px;
+    }
 
-        .control-panel {
-            width: 100%;
-            max-width: 420px;
-            background: #14291e;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-sizing: border-box;
-            border: 1px solid #1f3d2e;
-        }
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        .btn-generate {
-            width: 100%;
-            background: linear-gradient(135deg, #cca43b, #b58d2a);
-            color: #064e28;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(204, 164, 59, 0.3);
-        }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
 
-        .loading-status {
-            display: none;
-            color: #cca43b;
-            font-weight: 600;
-            margin: 15px 0;
-        }
+    .status-bar {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 15px;
+      text-align: right;
+    }
 
-        .posters-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            width: 100%;
-            align-items: center;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+    }
 
-        .poster-wrapper {
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        .poster-card {
-            width: 100%;
-            aspect-ratio: 1 / 1; 
-            background: linear-gradient(135deg, #071c11 0%, #0d291b 100%);
-            border: 4px solid #cca43b;
-            border-radius: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            padding: 20px 22px;
-            justify-content: space-between;
-        }
+    .card img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
 
-        .poster-header {
-            text-align: center;
-            border-bottom: 1px solid rgba(254, 254, 254, 0.1);
-            padding-bottom: 6px;
-        }
+    .card h3 {
+      margin: 10px 0 5px;
+      font-size: 1rem;
+    }
 
-        .logo-text {
-            font-size: 26px;
-            font-weight: 800;
-            color: #cca43b;
-            letter-spacing: 2px;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
+    .price {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
 
-        .logo-sub {
-            font-size: 10px;
-            color: #ffffff;
-            font-weight: 500;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+    .cart-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .title-badge {
-            background: #cca43b;
-            color: #071c11;
-            padding: 2px 16px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-top: 4px;
-            display: inline-block;
-            letter-spacing: 1px;
-        }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
 
-        .meta-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 6px;
-            font-size: 11px;
-            color: #a0aec0;
-            font-weight: 600;
-        }
+    button:hover {
+      opacity: 0.9;
+    }
 
-        .items-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 5px; 
-            margin: 10px 0;
-            flex-grow: 1;
-            justify-content: center;
-        }
+    .qty {
+      font-weight: bold;
+      min-width: 20px;
+    }
 
-        .item-row {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(204, 164, 59, 0.15);
-            border-radius: 6px;
-            padding: 8px 14px; 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
-            height: auto; 
-            overflow: visible;
-        }
+    /* Fixed Cart Footer */
+    .cart-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 2px solid var(--primary);
+      padding: 12px 20px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
 
-        .box-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 0;
-            overflow: visible;
-        }
-
-        .box-num {
-            font-size: 11px;
-            color: #cca43b;
-            font-weight: 700;
-            opacity: 0.6;
-            width: 18px;
-        }
-
-        .box-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #ffffff;
-            line-height: 1.8;
-            white-space: normal;
-            overflow: visible;
-        }
-
-        /* 🏷️ 1 Pc കാണിക്കാനുള്ള ബാഡ്ജ് സ്റ്റൈൽ */
-        .unit-tag {
-            font-size: 10px;
-            color: #071c11;
-            background: #cca43b;
-            padding: 1px 6px;
-            border-radius: 4px;
-            margin-left: 6px;
-            font-weight: 800;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .box-price-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .price-regular {
-            font-size: 11px;
-            color: #e53e3e;
-            text-decoration: line-through; 
-            font-weight: 500;
-            opacity: 0.85;
-        }
-
-        .price-offer {
-            font-size: 14.5px;
-            font-weight: 700;
-            color: #ffb703;
-            min-width: 45px;
-            text-align: right;
-        }
-
-        .poster-footer {
-            border-top: 1px solid rgba(254, 254, 254, 0.1);
-            padding-top: 8px;
-            text-align: center;
-        }
-
-        .footer-banner-wa {
-            font-size: 11px;
-            font-weight: 600;
-            color: #cca43b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .footer-banner-wa span {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .btn-share-wa {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            margin-top: 12px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .text-backup-card {
-            background: #14291e;
-            padding: 18px;
-            border-radius: 16px;
-            max-width: 420px;
-            margin: 20px auto;
-            display: none;
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid #1f3d2e;
-        }
-        textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1f3d2e; background: #0c1a12; color: #fff; font-family: inherit; font-size: 13px; box-sizing: border-box; }
-        .btn-copy-text { width: 100%; background: #cca43b; color: #071c11; border: none; padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: 700; cursor: pointer; }
-    </style>
+    .order-btn {
+      background-color: #25D366; /* WhatsApp Green */
+      padding: 10px 20px;
+      font-size: 0.95rem;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="control-panel">
-        <h2 style="margin: 0 0 5px 0; font-size: 20px; color: #cca43b; font-weight: 800;">NSI Studio Style</h2>
-        <p style="margin: 0 0 18px 0; font-size: 12px; color: #a0aec0;">Fixed Single Column Design (15 Items)</p>
-        <button class="btn-generate" onclick="generatePremiumPosters()">🎨 ഡിസൈനർ പോസ്റ്റർ നിർമ്മിക്കുക</button>
+  <header>
+    <h2>🥦 പച്ചക്കറി കട - ലൈവ് പ്രൈസ് ലിസ്റ്റ്</h2>
+  </header>
+
+  <div class="container">
+    <div class="status-bar" id="syncStatus">വിലകൾ ലോഡ് ചെയ്യുന്നു...</div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+
+  <div class="cart-footer">
+    <div>
+      <strong>ആകെ തുക: ₹<span id="totalAmount">0</span></strong>
     </div>
+    <button class="order-btn" onclick="sendWhatsAppOrder()">WhatsApp വഴി ഓർഡർ ചെയ്യുക</button>
+  </div>
 
-    <div id="loading" class="loading-status">⏳ റേറ്റുകൾ കൃത്യമായി ക്രമീകരിക്കുന്നു...</div>
+  <script>
+    // ---------------------------------------------------------------- //
+    // 1. നിങ്ങളുടെ Google Web App URL താഴെ നൽകുക
+    const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+    
+    // 2. നിങ്ങളുടെ WhatsApp നമ്പർ
+    const WHATSAPP_NUMBER = "917593925926"; 
+    // ---------------------------------------------------------------- //
 
-    <div class="posters-container" id="posters-container"></div>
+    let products = [];
+    let cart = {};
 
-    <div class="text-backup-card" id="text-card">
-        <span style="font-size: 13px; font-weight: 700; color: #cca43b; display:block; margin-bottom: 8px;">💬 വാട്സാപ്പ് ടെക്സ്റ്റ് ലിസ്റ്റ്:</span>
-        <textarea id="text-area" rows="5"></textarea>
-        <button class="btn-copy-text" onclick="copyBroadcastText()">📋 കോപ്പി ചെയ്യുക</button>
-    </div>
-
-<script>
-    const sheetAppUrl = "https://script.google.com/macros/s/AKfycbyg9RmH2iFblNzWNBBL7J4SR-W003CQnDju8RPoPBINF_cD6Fdidkn7h9QLvMsL8u4z/exec";
-
-    function generatePremiumPosters() {
-        const loading = document.getElementById("loading");
-        const container = document.getElementById("posters-container");
-        const tCard = document.getElementById("text-card");
-
-        loading.style.display = "block";
-        container.innerHTML = "";
-        tCard.style.display = "none";
-
-        fetch(sheetAppUrl)
-            .then(res => res.json())
-            .then(data => {
-                loading.style.display = "none";
-
-                let rawProducts = [];
-                if (Array.isArray(data)) { rawProducts = data; }
-                else if (data && Array.isArray(data.data)) { rawProducts = data.data; }
-
-                let cleanedItems = [];
-                rawProducts.forEach(product => {
-                    const keys = Object.keys(product).reduce((acc, k) => {
-                        acc[k.toLowerCase().replace(/\s+/g, '')] = product[k];
-                        return acc;
-                    }, {});
-
-                    let name = keys['name'] || product['Name'] || product['name'] || "";
-                    let offerPrice = parseFloat(keys['offerprice'] || product['OfferPrice'] || product['offerPrice'] || 0);
-                    let regularPrice = parseFloat(keys['regularprice'] || product['RegularPrice'] || product['regularPrice'] || 0);
-
-                    if (name && name !== "No Name" && offerPrice > 0) {
-                        
-                        // 🔍 മലയാളം വാക്കുകളെ കൃത്യമായി സ്കാൻ ചെയ്യാൻ Regex ഫിൽട്ടറിംഗ് ചേർത്തു
-                        let isPieceItem = false;
-                        const nameTrimmed = name.trim();
-
-                        // "വെള്ളരി", "വെള്ളരിക്ക", "കോളിഫ്ലവർ", "കോളീഫ്ലവർ" തുടങ്ങിയ മലയാളം പദങ്ങൾ
-                        const vellariRegex = /വെള്ളരി|വെള്ളരിക്ക|വെള്ളരിയ്ക്ക/i;
-                        const cauliflowerRegex = /കോളിഫ്ലവർ|കോളീഫ്ലവർ|കോളി ഫ്ലവർ/i;
-                        const englishRegex = /cucumber|cauliflower/i;
-
-                        if (vellariRegex.test(nameTrimmed) || cauliflowerRegex.test(nameTrimmed) || englishRegex.test(nameTrimmed)) {
-                            isPieceItem = true;
-                        }
-
-                        cleanedItems.push({ 
-                            name: nameTrimmed, 
-                            offer: offerPrice,
-                            regular: regularPrice > 0 ? regularPrice : offerPrice + 10,
-                            unit: isPieceItem ? "pc" : "kg"
-                        });
-                    }
-                });
-
-                if (cleanedItems.length === 0) {
-                    alert("ഷീറ്റിൽ ഡാറ്റ ഒന്നും കണ്ടെത്തിയില്ല!");
-                    return;
-                }
-
-                const currentDate = new Date().toLocaleDateString('en-IN');
-                const limit = 15; 
-                const totalPageCount = Math.ceil(cleanedItems.length / limit);
-
-                for (let page = 0; page < totalPageCount; page++) {
-                    const start = page * limit;
-                    const end = Math.min(start + limit, cleanedItems.length);
-                    const chunk = cleanedItems.slice(start, end);
-
-                    let wrapper = document.createElement('div');
-                    wrapper.className = 'poster-wrapper';
-                    let posterId = `poster-page-${page + 1}`;
-
-                    let listRows = "";
-                    chunk.forEach((item, index) => {
-                        const serialNumber = start + index + 1;
-                        
-                        // Piece ആണെങ്കിൽ "(1 Pc)" ബാഡ്ജ് പേരിനൊപ്പം കാണിക്കും
-                        const unitBadge = item.unit === "pc" ? `<span class="unit-tag">(1 Pc)</span>` : ``;
-
-                        listRows += `
-                            <div class="item-row">
-                                <div class="box-left">
-                                    <span class="box-num">${serialNumber}</span>
-                                    <span class="box-title">${item.name} ${unitBadge}</span>
-                                </div>
-                                <div class="box-price-container">
-                                    <span class="price-regular">₹${item.regular}</span>
-                                    <span class="price-offer">₹${item.offer}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    wrapper.innerHTML = `
-                        <div class="poster-card" id="${posterId}">
-                            <div class="poster-header">
-                                <h1 class="logo-text">NSI FRESH</h1>
-                                <span class="logo-sub">PREMIUM VEGETABLES</span>
-                                <br>
-                                <div class="title-badge">DAILY PRICE LIST</div>
-                                <div class="meta-info">
-                                    <span>📆 Date: ${currentDate}</span>
-                                    <span style="color: #cca43b">PAGE ${page + 1} / ${totalPageCount}</span>
-                                </div>
-                            </div>
-
-                            <div class="items-list-container">
-                                ${listRows}
-                            </div>
-
-                            <div class="poster-footer">
-                                <div class="footer-banner-wa">
-                                    📱 Order on WhatsApp: <span>+91 75 93 92 59 26</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button class="btn-share-wa" onclick="sharePosterToWhatsApp('${posterId}', ${page + 1})">
-                            🟢 പേജ് ${page + 1} വാട്സാപ്പിൽ ഷെയർ ചെയ്യാം
-                        </button>
-                    `;
-
-                    container.appendChild(wrapper);
-                }
-
-                // 💬 വാട്സാപ്പ് മെസ്സേജ് ഉണ്ടാക്കുമ്പോൾ (1 Pc / kg എന്ന് ചേർക്കുന്നത്)
-                let broadcastMessage = `🥬 *NSI FRESH & GREEN* 🥬\n📆 Date: ${currentDate}\n\n`;
-                cleanedItems.forEach((item, idx) => {
-                    const unitText = item.unit === "pc" ? "1 Pc" : "kg";
-                    broadcastMessage += `${idx + 1}. ${item.name} ➔ ₹~~${item.regular}~~ *₹${item.offer}/${unitText}*\n`;
-                });
-                broadcastMessage += `\n🛒 Order Now on WhatsApp!`;
-                document.getElementById("text-area").value = broadcastMessage;
-                tCard.style.display = "block";
-            })
-            .catch(error => {
-                loading.style.display = "none";
-                alert("ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
-            });
+    async function fetchProducts() {
+      try {
+        const response = await fetch(API_URL);
+        products = await response.json();
+        renderProducts();
+        document.getElementById('syncStatus').innerText = "അവസാനം അപ്‌ഡേറ്റ് ചെയ്തത്: " + new Date().toLocaleTimeString();
+      } catch (error) {
+        document.getElementById('syncStatus').innerText = "ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിശക്!";
+      }
     }
 
-    function sharePosterToWhatsApp(elementId, pageNum) {
-        const element = document.getElementById(elementId);
-        const btn = element.nextElementSibling;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ ഫോട്ടോ തയാറാക്കുന്നു...";
-        btn.disabled = true;
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
 
-        html2canvas(element, {
-            scale: 3, 
-            useCORS: true,
-            backgroundColor: "#0c1a12"
-        }).then(canvas => {
-            canvas.toBlob(blob => {
-                const file = new File([blob], `NSI_Offer_Page_${pageNum}.png`, { type: 'image/png' });
+      products.forEach((p, index) => {
+        // Headers lowercase/uppercase ആയാലും കൃത്യമായി എടുക്കാൻ:
+        const id = p.id || p.ID || index;
+        const name = p.name || p.Name || p.ITEM || p.Item || 'Item';
+        const price = p.price || p.Price || p.RATE || p.Rate || 0;
+        const unit = p.unit || p.Unit || p.QTY || p.Qty || 'kg';
+        const image = p.image || p.Image || p.IMAGE || 'https://via.placeholder.com/150';
 
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({
-                        files: [file],
-                        title: `NSI Price List`,
-                        text: `NSI Fresh Offer List (Page ${pageNum})`
-                    })
-                    .then(() => { btn.innerHTML = originalText; btn.disabled = false; })
-                    .catch((err) => { btn.innerHTML = originalText; btn.disabled = false; });
-                } else {
-                    const a = document.createElement('a');
-                    a.href = canvas.toDataURL('image/png');
-                    a.download = `NSI_Offer_Page_${pageNum}.png`;
-                    a.click();
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    alert("ഫോട്ടോ ഡൗൺലോഡ് ആയിട്ടുണ്ട്!");
-                }
-            }, 'image/png');
-        });
+        const currentQty = cart[id] ? cart[id].qty : 0;
+
+        grid.innerHTML += `
+          <div class="card">
+            <img src="${image}" alt="${name}">
+            <h3>${name}</h3>
+            <div class="price">₹${price} / ${unit}</div>
+            <div class="cart-controls">
+              <button onclick="updateCart('${id}', '${name}', ${price}, '${unit}', -1)">-</button>
+              <span class="qty">${currentQty}</span>
+              <button onclick="updateCart('${id}', '${name}', ${price}, '${unit}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      });
+      updateTotal();
     }
 
-    function copyBroadcastText() {
-        const area = document.getElementById("text-area");
-        area.select();
-        navigator.clipboard.writeText(area.value);
-        alert("🎉 ലിസ്റ്റ് കോപ്പി ചെയ്തു!");
+    function updateCart(id, name, price, unit, change) {
+      if (!cart[id]) {
+        cart[id] = { name, price, unit, qty: 0 };
+      }
+      
+      cart[id].qty += change;
+      
+      if (cart[id].qty <= 0) {
+        delete cart[id];
+      }
+      
+      renderProducts();
     }
-</script>
+
+    function updateTotal() {
+      let total = 0;
+      for (const id in cart) {
+        total += cart[id].price * cart[id].qty;
+      }
+      document.getElementById('totalAmount').innerText = total;
+    }
+
+    function sendWhatsAppOrder() {
+      if (Object.keys(cart).length === 0) {
+        alert("ദയവായി കാർട്ടിലേക്ക് സാധനങ്ങൾ ചേർക്കുക!");
+        return;
+      }
+
+      let message = "*പുതിയ പച്ചക്കറി ഓർഡർ:*\n------------------\n";
+      let total = 0;
+
+      for (const id in cart) {
+        const item = cart[id];
+        const itemTotal = item.price * item.qty;
+        message += `• ${item.name} (${item.unit}) x ${item.qty} = ₹${itemTotal}\n`;
+        total += itemTotal;
+      }
+
+      message += `------------------\n*ആകെ തുക: ₹${total}*`;
+
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+    }
+
+    // ആദ്യ തവണ ഡാറ്റ ലോഡ് ചെയ്യുന്നു
+    fetchProducts();
+
+    // ഓരോ 1 മിനിറ്റിലും സ്വയം പ്രൈസ് ഓട്ടോ-റിഫ്രഷ് ചെയ്യുന്നു
+    setInterval(fetchProducts, 60000);
+  </script>
 </body>
 </html>
