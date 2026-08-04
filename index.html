@@ -151,7 +151,7 @@
         .box-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex: 1;
             min-width: 0;
             overflow: visible;
@@ -174,14 +174,17 @@
             overflow: visible;
         }
 
+        /* 🏷️ 1 Pc കാണിക്കാനുള്ള ബാഡ്ജ് സ്റ്റൈൽ */
         .unit-tag {
             font-size: 10px;
-            color: #cca43b;
-            background: rgba(204, 164, 59, 0.15);
-            padding: 1px 5px;
-            border-radius: 3px;
-            margin-left: 5px;
-            font-weight: 700;
+            color: #071c11;
+            background: #cca43b;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: 800;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .box-price-container {
@@ -313,18 +316,25 @@
                     let regularPrice = parseFloat(keys['regularprice'] || product['RegularPrice'] || product['regularPrice'] || 0);
 
                     if (name && name !== "No Name" && offerPrice > 0) {
-                        // 🛠️ വെള്ളരിക്ക അല്ലെങ്കിൽ കോളിഫ്ലവർ ആണോ എന്ന് പരിശോധിച്ച് യൂണിറ്റ് തിട്ടപ്പെടുത്തുന്നു
-                        const nameLower = name.toLowerCase();
-                        let unitType = "kg";
-                        if (nameLower.includes("വെള്ളരി") || nameLower.includes("കോളിഫ്ലവർ") || nameLower.includes("cauliflower") || nameLower.includes("cucumber")) {
-                            unitType = "pc";
+                        
+                        // 🔍 മലയാളം വാക്കുകളെ കൃത്യമായി സ്കാൻ ചെയ്യാൻ Regex ഫിൽട്ടറിംഗ് ചേർത്തു
+                        let isPieceItem = false;
+                        const nameTrimmed = name.trim();
+
+                        // "വെള്ളരി", "വെള്ളരിക്ക", "കോളിഫ്ലവർ", "കോളീഫ്ലവർ" തുടങ്ങിയ മലയാളം പദങ്ങൾ
+                        const vellariRegex = /വെള്ളരി|വെള്ളരിക്ക|വെള്ളരിയ്ക്ക/i;
+                        const cauliflowerRegex = /കോളിഫ്ലവർ|കോളീഫ്ലവർ|കോളി ഫ്ലവർ/i;
+                        const englishRegex = /cucumber|cauliflower/i;
+
+                        if (vellariRegex.test(nameTrimmed) || cauliflowerRegex.test(nameTrimmed) || englishRegex.test(nameTrimmed)) {
+                            isPieceItem = true;
                         }
 
                         cleanedItems.push({ 
-                            name: name, 
+                            name: nameTrimmed, 
                             offer: offerPrice,
                             regular: regularPrice > 0 ? regularPrice : offerPrice + 10,
-                            unit: unitType
+                            unit: isPieceItem ? "pc" : "kg"
                         });
                     }
                 });
@@ -350,7 +360,9 @@
                     let listRows = "";
                     chunk.forEach((item, index) => {
                         const serialNumber = start + index + 1;
-                        const unitBadge = item.unit === "pc" ? `<span class="unit-tag">1 Pc</span>` : ``;
+                        
+                        // Piece ആണെങ്കിൽ "(1 Pc)" ബാഡ്ജ് പേരിനൊപ്പം കാണിക്കും
+                        const unitBadge = item.unit === "pc" ? `<span class="unit-tag">(1 Pc)</span>` : ``;
 
                         listRows += `
                             <div class="item-row">
@@ -398,10 +410,11 @@
                     container.appendChild(wrapper);
                 }
 
+                // 💬 വാട്സാപ്പ് മെസ്സേജ് ഉണ്ടാക്കുമ്പോൾ (1 Pc / kg എന്ന് ചേർക്കുന്നത്)
                 let broadcastMessage = `🥬 *NSI FRESH & GREEN* 🥬\n📆 Date: ${currentDate}\n\n`;
                 cleanedItems.forEach((item, idx) => {
-                    const unitLabel = item.unit === "pc" ? "1 Pc" : "kg";
-                    broadcastMessage += `${idx + 1}. ${item.name} ➔ ₹~~${item.regular}~~ *₹${item.offer}/${unitLabel}*\n`;
+                    const unitText = item.unit === "pc" ? "1 Pc" : "kg";
+                    broadcastMessage += `${idx + 1}. ${item.name} ➔ ₹~~${item.regular}~~ *₹${item.offer}/${unitText}*\n`;
                 });
                 broadcastMessage += `\n🛒 Order Now on WhatsApp!`;
                 document.getElementById("text-area").value = broadcastMessage;
